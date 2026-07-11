@@ -65,7 +65,7 @@ export function Nav({
             {/* CTA Button */}
             <li>
               <Link
-                href="/questionnaire/select_multiple"
+                href={`/survey?id=${1}`}
                 className="group relative inline-flex items-center gap-2 px-6 py-2.5 text-sm font-semibold text-white rounded-full overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40"
               >
                 {/* Animated background */}
