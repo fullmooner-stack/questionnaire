@@ -36,12 +36,10 @@ export default function QuestionStep({
     const answers = formData.getAll("answer");
 
     // Validate for multiple choice questions
-    if (
-      (question.type === "select_multiple" ||
-        question.type === "select_multiple_card") &&
-      answers.length === 0
-    ) {
-      setError("Please select at least one option");
+    if (answers.length === 0) {
+      if (question.type.startsWith("select_multiple"))
+        setError("Please select at least one option");
+      else setError("Please select an answer");
       return;
     }
 

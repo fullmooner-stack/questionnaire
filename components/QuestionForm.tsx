@@ -126,7 +126,7 @@ export default function QuestionForm(userSurvey: QuestionRunnerState) {
         )}
       </div>
       {/* Navigation buttons */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between pt-4">
         {/* Back button */}
         <form action={formAction}>
           <input type="hidden" name="actionType" value="back" />
