@@ -1,14 +1,72 @@
 import { BrowserQuestion } from "@/app/actions";
 import { SubmitButton } from "./ui/SubmitButton";
 import { motion, AnimatePresence } from "framer-motion";
+import { useState, useTransition } from "react";
 
 type CardOption = { value: string; title: string; description: string };
 
+type QuestionRunnerState = {
+  id: string;
+  surveyId: string;
+  sessionId: string;
+  region: string;
+  currPage: string;
+  termsOfService: boolean;
+  privacyPolicy: boolean;
+  currentQuestionIndex: number;
+  questionsCount: number;
+  currentQuestion: BrowserQuestion | null;
+};
+
 export default function QuestionStep({
-  question,
+  state,
+  formAction,
 }: {
-  question: BrowserQuestion;
+  state: QuestionRunnerState;
+  formAction: (payload: FormData) => void;
 }) {
+  const question = state.currentQuestion;
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
+
+  if (!question) {
+    return (
+      <div className="flex w-full h-full items-center justify-center bg-linear-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
+        <div className="text-white text-center">
+          <h2 className="text-2xl font-bold mb-4">Survey Complete!</h2>
+          <p className="text-gray-300">Thank you for completing the survey.</p>
+        </div>
+      </div>
+    );
+  }
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+    const answers = formData.getAll("answer");
+
+    // Validate for multiple choice questions
+    if (
+      (question.type === "select_multiple" ||
+        question.type === "select_multiple_card") &&
+      answers.length === 0
+    ) {
+      setError("Please select at least one option");
+      return;
+    }
+
+    setError(null);
+
+    // Add actionType to formData for your server action
+    formData.append("actionType", "submit");
+
+    // Wrap in startTransition to properly handle useActionState
+    startTransition(() => {
+      formAction(formData);
+    });
+  };
+
   return (
     <div className="flex w-full h-full items-center justify-center bg-linear-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
       <motion.div
@@ -26,47 +84,86 @@ export default function QuestionStep({
           <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-blue-500 rounded-full blur-3xl opacity-20 animate-pulse delay-1000" />
 
           <div className="relative p-8 space-y-8">
-            <input type="hidden" name="questionId" value={question.id} />
-            <input type="hidden" name="questionType" value={question.type} />
+            <form onSubmit={handleSubmit}>
+              <input type="hidden" name="questionId" value={question.id} />
+              <input type="hidden" name="questionType" value={question.type} />
 
-            {/* Question text with animated reveal */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2, duration: 0.6 }}
-            >
-              <div className="flex items-center gap-3 mb-2">
-                <div className="h-1 w-8 bg-linear-to-r from-purple-400 to-pink-400 rounded-full" />
-                <span className="text-purple-300 text-sm font-medium tracking-wider uppercase">
-                  Question {question.id}
-                </span>
-              </div>
-              <h2 className="text-2xl font-bold text-white leading-tight">
-                {question.text}
-              </h2>
-            </motion.div>
-
-            {/* Options with staggered animation */}
-            <AnimatePresence mode="wait">
+              {/* Question text with animated reveal */}
               <motion.div
-                key={question.id}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2, duration: 0.6 }}
               >
-                {renderOptions(question)}
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="h-1 w-8 bg-linear-to-r from-purple-400 to-pink-400 rounded-full" />
+                  <span className="text-purple-300 text-sm font-medium tracking-wider uppercase">
+                    Question {state.currentQuestionIndex + 1} of{" "}
+                    {state.questionsCount}
+                  </span>
+                </div>
+                <h2 className="text-2xl font-bold text-white leading-tight">
+                  {question.text}
+                </h2>
               </motion.div>
-            </AnimatePresence>
 
-            {/* Submit button */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.5 }}
-            >
-              <SubmitButton>Next</SubmitButton>
-            </motion.div>
+              {/* Options with staggered animation */}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={question.id}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: isPending ? 0.5 : 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className={isPending ? "pointer-events-none" : ""}
+                >
+                  {renderOptions(question)}
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Error message */}
+              <AnimatePresence>
+                {error && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="bg-red-500/20 border border-red-400/50 text-red-200 px-4 py-3 rounded-xl text-sm"
+                  >
+                    {error}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Loading overlay */}
+              <AnimatePresence>
+                {isPending && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="flex items-center justify-center gap-3 py-4"
+                  >
+                    <div className="w-6 h-6 border-2 border-purple-400 border-t-transparent rounded-full animate-spin" />
+                    <span className="text-purple-300 text-sm font-medium">
+                      Submitting your answer...
+                    </span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Submit button */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6, duration: 0.5 }}
+              >
+                <SubmitButton loadingText="Submitting...">
+                  {state.currentQuestionIndex === state.questionsCount - 1
+                    ? "Finish"
+                    : "Next"}
+                </SubmitButton>
+              </motion.div>
+            </form>
           </div>
         </div>
       </motion.div>
@@ -94,7 +191,7 @@ function renderOptions(question: BrowserQuestion) {
                   name="answer"
                   value={opt}
                   className="peer sr-only"
-                  defaultChecked={question?.answer === opt}
+                  defaultChecked={question.answer === opt}
                 />
                 <div className="relative w-5 h-5 rounded-full border-2 border-white/30 peer-checked:border-purple-400 peer-checked:bg-purple-400 transition-all duration-300">
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 peer-checked:opacity-100 transition-opacity duration-300">

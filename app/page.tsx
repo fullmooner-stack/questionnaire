@@ -1,7 +1,6 @@
 import Link from "next/link";
 import prisma from "./lib/prisma";
 import { cookies } from "next/headers";
-import { FloatingCard } from "@/components/ui/floating_card/FloatingCardItem";
 import { Analytics } from "@vercel/analytics/next";
 
 export default async function Home() {
@@ -27,15 +26,13 @@ export default async function Home() {
 
   return (
     <>
-      <div className="relative flex flex-1 w-full min-h-screen items-center justify-center bg-linear-to-br from-slate-900 via-purple-900 to-slate-900 overflow-hidden">
+      <div className="relative flex flex-1 w-full min-h-screen items-center justify-center bg-linear-to-br from-slate-900 via-black to-slate-900 overflow-hidden">
         {/* Animated background elements */}
         <div className="absolute inset-0 overflow-hidden">
           {/* Grid pattern */}
           <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-size-[64px_64px]" />
 
           {/* Floating orbs with CSS animations */}
-          {/* <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full blur-3xl opacity-20 animate-pulse" /> */}
-          {/* <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500 rounded-full blur-3xl opacity-20 animate-pulse [animation-delay:1s]" /> */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-pink-500 rounded-full blur-3xl opacity-10 animate-pulse [animation-delay:0.5s]" />
         </div>
 
@@ -144,26 +141,6 @@ export default async function Home() {
             <div className="hidden lg:block flex-1 animate-slideInRight">
               <div className="relative">
                 {/* Floating card with CSS animation */}
-                <FloatingCard>
-                  <FloatingCard.Item
-                    header="What's your ideal weekend?"
-                    details="Exploring new places ✈️"
-                    boxTag="1"
-                    boxColor="from-purple-500"
-                  />
-                  <FloatingCard.Item
-                    header="What's your ideal weekend?"
-                    details="Exploring new places ✈️"
-                    boxTag="1"
-                    boxColor="from-purple-500"
-                  />
-                  <FloatingCard.Item
-                    header="What's your ideal weekend?"
-                    details="Exploring new places ✈️"
-                    boxTag="1"
-                    boxColor="from-purple-500"
-                  />
-                </FloatingCard>
                 <div className="animate-float-slow relative z-10">
                   <div className="backdrop-blur-xl bg-white/10 rounded-2xl p-8 border border-white/20 shadow-2xl">
                     <div className="space-y-4">

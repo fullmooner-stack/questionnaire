@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-// components/Complete.tsx
 export default function Complete() {
   return (
     <div className="flex flex-col items-center justify-center min-h-100 text-center space-y-6 animate-fadeIn">

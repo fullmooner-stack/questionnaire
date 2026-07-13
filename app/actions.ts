@@ -1,4 +1,5 @@
 "use server";
+import { cookies } from "next/headers";
 import { Question, UserSurvey } from "./generated/prisma/client";
 import prisma from "./lib/prisma";
 
@@ -18,7 +19,7 @@ export type BrowserQuestion = Question & {
 
 export type QuestionRunnerState = BrowserSurveyState & {
   questionsCount: number;
-  currentQuestion: Question | null;
+  currentQuestion: BrowserQuestion | null;
 };
 
 export async function surveyActions(
@@ -29,10 +30,8 @@ export async function surveyActions(
 
   if (userSurvey.currPage === "intro") {
     nextState = await consent(userSurvey, formData);
-    nextState.currPage = "region";
   } else {
     nextState = await setRegion(userSurvey, formData);
-    nextState.currPage = "questions";
   }
 
   return { ...nextState };
@@ -140,6 +139,23 @@ async function getPrevQuestion(state: QuestionRunnerState) {
   if (res) {
     --state.currentQuestionIndex;
     state.currentQuestion = res.question;
+    const prevAnswerRes = await prisma.answer.findUnique({
+      where: {
+        userSurveyId_questionId: {
+          userSurveyId: state.id,
+          questionId: res.question.id,
+        },
+      },
+      select: { value: true },
+    });
+
+    if (!prevAnswerRes) return { ...state };
+    const prevAnswer = prevAnswerRes.value;
+    state.currentQuestion = {
+      ...res.question,
+      answer: prevAnswer as string | string[],
+    };
+
     return { ...state };
   } else return state;
 }
@@ -148,6 +164,7 @@ async function submitAnswerAndGetNext(
   prevState: QuestionRunnerState,
   formData: FormData,
 ): Promise<QuestionRunnerState> {
+  const sessionId = (await cookies()).get("sessionId")!.value;
   const questionId = formData.get("questionId") as string;
   const questionType = formData.get("questionType") as string;
   const raw = formData.getAll("answer") as string[];
@@ -163,8 +180,14 @@ async function submitAnswerAndGetNext(
   const nextQuestion = await prisma.$transaction(async () => {
     await submitAnswer(prevState, questionId, value);
     prevState.currentQuestion = null;
-    ++prevState.currentQuestionIndex;
-    return getCurrQuestion(prevState);
+
+    await prisma.userSurvey.update({
+      where: { sessionId_surveyId: { sessionId, surveyId: "1" } },
+      data: {
+        currentQuestionIndex: ++prevState.currentQuestionIndex,
+      },
+    });
+    return await getCurrQuestion(prevState);
   });
 
   return { ...prevState, currentQuestion: nextQuestion };
@@ -176,7 +199,7 @@ export async function setRegion(
 ): Promise<UserSurvey> {
   const region = formData.get("region");
   const surveyId = userSurvey.surveyId;
-  const sessionId = userSurvey.sessionId;
+  const sessionId = (await cookies()).get("sessionId")!.value;
 
   if (typeof region !== "string" || !region)
     throw new Error("Region is required");
@@ -185,33 +208,40 @@ export async function setRegion(
     where: {
       sessionId_surveyId: { sessionId, surveyId },
     },
-    data: { region },
+    data: {
+      region,
+      currPage: "questions",
+    },
   });
+  userSurvey.currPage = "questions";
   userSurvey.region = region;
-  return { ...userSurvey };
+  return userSurvey;
 }
 
 async function consent(userSurvey: UserSurvey, formData: FormData) {
   formData.get("surveyId") as string;
   const surveyId = userSurvey.surveyId;
-  const sessionId = userSurvey.sessionId;
+  const sessionId = (await cookies()).get("sessionId")!.value;
 
   await prisma.userSurvey.update({
     where: {
       sessionId_surveyId: { sessionId, surveyId },
     },
     data: {
+      currPage: "region",
       termsOfService: true,
       privacyPolicy: true,
     },
   });
+  userSurvey.currPage = "region";
+  userSurvey.region = "region";
   userSurvey.termsOfService = true;
   userSurvey.privacyPolicy = true;
-  return { ...userSurvey };
+  return userSurvey;
 }
 
 export async function getUserSurvey(surveyId: string, sessionId: string) {
-  return prisma.$transaction(async () => {
+  return await prisma.$transaction(async () => {
     const existing = await prisma.userSurvey.findUnique({
       where: {
         sessionId_surveyId: { sessionId, surveyId },

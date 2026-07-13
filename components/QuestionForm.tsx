@@ -103,8 +103,6 @@ export default function QuestionForm(userSurvey: QuestionRunnerState) {
                 {"Discover Yourself"}
               </h1>
               <p className="text-sm text-gray-400">
-                {/* {userSurvey.surveyDescription ||
-                      "Share your preferences with us"} */}
                 {"Share your preferences with us"}
               </p>
             </div>
@@ -116,7 +114,7 @@ export default function QuestionForm(userSurvey: QuestionRunnerState) {
               Question{" "}
               {userSurvey.currentQuestionIndex !== undefined &&
               userSurvey.currentQuestionIndex !== null
-                ? userSurvey.currentQuestionIndex + 1
+                ? userSurvey.currentQuestionIndex
                 : 1}
             </span>
             <span className="text-sm text-gray-500">of</span>
@@ -133,43 +131,43 @@ export default function QuestionForm(userSurvey: QuestionRunnerState) {
           </div>
         ) : (
           <div className="space-y-6 animate-slideInRight">
-            <form action={formAction} className="relative">
-              <input type="hidden" name="actionType" value="submit" />
+            <input type="hidden" name="actionType" value="submit" />
 
-              {/* Question card */}
-              <div className="relative backdrop-blur-xl bg-white/5 rounded-2xl border border-white/10 shadow-2xl overflow-hidden">
-                {/* Card header with question type badge */}
-                <div className="px-8 pt-6 pb-2">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-purple-500/10 text-purple-300 border border-purple-400/20">
-                        {state.currentQuestion.type === "select_single" &&
-                          "Single Choice"}
-                        {state.currentQuestion.type === "select_multiple" &&
-                          "Multiple Choice"}
-                        {state.currentQuestion.type === "select_single_card" &&
-                          "Single Choice"}
-                        {state.currentQuestion.type ===
-                          "select_multiple_card" && "Multiple Choice"}
+            {/* Question card */}
+            <div className="relative backdrop-blur-xl bg-white/5 rounded-2xl border border-white/10 shadow-2xl overflow-hidden">
+              {/* Card header with question type badge */}
+              <div className="px-8 pt-6 pb-2">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-purple-500/10 text-purple-300 border border-purple-400/20">
+                      {state.currentQuestion.type === "select_single" &&
+                        "Single Choice"}
+                      {state.currentQuestion.type === "select_multiple" &&
+                        "Multiple Choice"}
+                      {state.currentQuestion.type === "select_single_card" &&
+                        "Single Choice"}
+                      {state.currentQuestion.type === "select_multiple_card" &&
+                        "Multiple Choice"}
+                    </span>
+                    {state.currentQuestion.type.includes("multiple") && (
+                      <span className="text-xs text-gray-500">
+                        Select all that apply
                       </span>
-                      {state.currentQuestion.type.includes("multiple") && (
-                        <span className="text-xs text-gray-500">
-                          Select all that apply
-                        </span>
-                      )}
-                    </div>
+                    )}
                   </div>
                 </div>
-
-                {/* Question content */}
-                <div className="px-8 pb-8">
-                  <QuestionStep question={state.currentQuestion} />
-                </div>
-
-                {/* Card bottom linear line */}
-                <div className="h-px bg-linear-to-r from-transparent via-purple-400/20 to-transparent" />
               </div>
-            </form>
+
+              {/* Question content */}
+              <div className="px-8 pb-8">
+                <QuestionStep state={state} formAction={formAction} />
+
+                {/* <QuestionStep question={state.currentQuestion} /> */}
+              </div>
+
+              {/* Card bottom linear line */}
+              <div className="h-px bg-linear-to-r from-transparent via-purple-400/20 to-transparent" />
+            </div>
 
             {/* Navigation buttons */}
             <div className="flex items-center justify-between">

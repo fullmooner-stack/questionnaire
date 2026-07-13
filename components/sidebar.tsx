@@ -103,21 +103,6 @@ export default function Sidebar({
               return (
                 <li key={i}>
                   <div className="relative">
-                    {/* Connector line */}
-                    {i < stages.length - 1 && (
-                      <div
-                        className={`
-                          absolute left-5 top-12 bottom-0 w-px -ml-px
-                          transition-all duration-500
-                          ${
-                            isCompleted
-                              ? "bg-linear-to-b from-purple-400 to-pink-400"
-                              : "bg-white/10"
-                          }
-                        `}
-                      />
-                    )}
-
                     <a
                       href="#"
                       className={`
