@@ -172,16 +172,6 @@ export default function Sidebar({
                         <p className="text-xs text-gray-500 mt-0.5 capitalize">
                           {stageDescriptions[s] || `Step ${i + 1}`}
                         </p>
-
-                        {/* Current stage indicator */}
-                        {isCurrent && (
-                          <div className="flex items-center gap-1.5 mt-1.5">
-                            <div className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
-                            <span className="text-xs text-purple-400">
-                              In progress
-                            </span>
-                          </div>
-                        )}
                       </div>
 
                       {/* Locked icon */}

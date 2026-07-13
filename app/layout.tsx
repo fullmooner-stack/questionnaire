@@ -53,9 +53,9 @@ export default function RootLayout({
           <div className="absolute inset-0 bg-[linear-linear(rgba(255,255,255,0.03)_1px,transparent_1px),linear-linear(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-size-[64px_64px] mask-[radial-linear(ellipse_80%_50%_at_50%_0%,black,transparent)]" />
 
           {/* Ambient light orbs */}
-          <div className="absolute -top-40 right-0 w-96 h-96 bg-purple-500 rounded-full blur-3xl opacity-10 animate-pulse" />
-          <div className="absolute bottom-0 -left-40 w-96 h-96 bg-blue-500 rounded-full blur-3xl opacity-10 animate-pulse [animation-delay:2s]" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-200 h-200 bg-pink-500 rounded-full blur-3xl opacity-5" />
+          {/* <div className="absolute -top-40 right-0 w-96 h-96 bg-purple-500 rounded-full blur-3xl opacity-10 animate-pulse" /> */}
+          {/* <div className="absolute bottom-0 -left-40 w-96 h-96 bg-blue-500 rounded-full blur-3xl opacity-10 animate-pulse [animation-delay:2s]" /> */}
+          {/* <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-200 h-200 bg-pink-500 rounded-full blur-3xl opacity-5" /> */}
         </div>
 
         {/* Skip to content link for accessibility */}

@@ -2,6 +2,7 @@ import { BrowserQuestion, QuestionRunnerState } from "@/app/actions";
 import { SubmitButton } from "./ui/SubmitButton";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useTransition } from "react";
+import Complete from "./Complete";
 
 type CardOption = { value: string; title: string; description: string };
 
@@ -18,12 +19,13 @@ export default function QuestionStep({
 
   if (!question) {
     return (
-      <div className="flex w-full h-full items-center justify-center bg-linear-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
-        <div className="text-white text-center">
-          <h2 className="text-2xl font-bold mb-4">Survey Complete!</h2>
-          <p className="text-gray-300">Thank you for completing the survey.</p>
-        </div>
-      </div>
+      <Complete />
+      // <div className="flex w-full h-full items-center justify-center bg-linear-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
+      //   <div className="text-white text-center">
+      //     <h2 className="text-2xl font-bold mb-4">Survey Complete!</h2>
+      //     <p className="text-gray-300">Thank you for completing the survey.</p>
+      //   </div>
+      // </div>
     );
   }
 
@@ -55,7 +57,7 @@ export default function QuestionStep({
   };
 
   return (
-    <div className="flex w-full h-full items-center justify-center bg-linear-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
+    <div className="flex w-full h-full items-center justify-center bg-linear-to-br from-transparent via-purple-950 to-transparent rounded-2xl p-4">
       <motion.div
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -143,6 +145,7 @@ export default function QuestionStep({
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6, duration: 0.5 }}
+                className="pt-4"
               >
                 <SubmitButton loadingText="Submitting...">
                   {state.currentQuestionIndex === state.questionsCount - 1

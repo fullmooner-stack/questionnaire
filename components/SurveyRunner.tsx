@@ -127,30 +127,6 @@ export default function SurveyRunner({
             </div>
           </div>
         </div>
-
-        {/* Bottom hint */}
-        {state.currPage !== "questions" && (
-          <div className="text-center pb-6">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10">
-              <svg
-                className="w-4 h-4 text-purple-400 animate-bounce"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 14l-7 7m0 0l-7-7m7 7V3"
-                />
-              </svg>
-              <span className="text-sm text-gray-400">
-                Scroll or click to continue
-              </span>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

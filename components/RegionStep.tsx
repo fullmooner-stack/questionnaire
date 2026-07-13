@@ -110,23 +110,6 @@ export default function RegionStep({
                   style={{ opacity: 0.05 }}
                 />
 
-                {/* Selection indicator */}
-                <div className="absolute top-3 right-3 w-6 h-6 rounded-full border-2 border-white/20 transition-all duration-300 flex items-center justify-center has-checked:border-purple-400 has-checked:bg-purple-400">
-                  <svg
-                    className="w-3 h-3 text-white opacity-0 transition-opacity duration-300 has-checked:opacity-100"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={3}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                </div>
-
                 <div className="relative space-y-3">
                   {/* Region icon */}
                   <div
@@ -177,28 +160,6 @@ export default function RegionStep({
               </label>
             ),
           )}
-        </div>
-
-        {/* Selected region preview */}
-        <div className="flex justify-center">
-          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 border border-white/10">
-            <svg
-              className="w-4 h-4 text-purple-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"
-              />
-            </svg>
-            <span className="text-sm text-gray-400">
-              Click on a region to select it
-            </span>
-          </div>
         </div>
 
         {/* Submit button */}
