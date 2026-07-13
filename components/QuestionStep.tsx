@@ -1,22 +1,9 @@
-import { BrowserQuestion } from "@/app/actions";
+import { BrowserQuestion, QuestionRunnerState } from "@/app/actions";
 import { SubmitButton } from "./ui/SubmitButton";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useTransition } from "react";
 
 type CardOption = { value: string; title: string; description: string };
-
-type QuestionRunnerState = {
-  id: string;
-  surveyId: string;
-  sessionId: string;
-  region: string;
-  currPage: string;
-  termsOfService: boolean;
-  privacyPolicy: boolean;
-  currentQuestionIndex: number;
-  questionsCount: number;
-  currentQuestion: BrowserQuestion | null;
-};
 
 export default function QuestionStep({
   state,
